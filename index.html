@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #a0c8fc;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .card h1 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        .input-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .input-group label {
+            flex: 1;
+            text-align: left;
+        }
+        input[type="number"], input[type="text"] {
+            flex: 2;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+        input[type="checkbox"] {
+            margin-left: 10px;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            border-radius: 5px;
+        }
+        button:first-of-type {
+            background: #131255;
+            color: white;
+        }
+        button:last-of-type {
+            background: #131255;
+            color: white;
+        }
+        input#result {
+            margin-top: 20px;
+            width: 45%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background: #f8f8f8;
+        }
+        .generated-passwords {
+            width: 300px;
+        }
+        .generated-password-card {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Password Generator</h1>
+        <div class="input-group">
+            <label for="name">Name of Website:</label>
+            <input type="text" id="name" placeholder="Enter name of website">
+        </div>
+        <div class="input-group">
+            <label for="length">Password Length:</label>
+            <input type="number" id="length" placeholder="Enter length">
+        </div>
+        <div class="input-group">
+            <label for="uppercase">Include Uppercase Letters:</label>
+            <input type="checkbox" id="uppercase">
+        </div>
+        <div class="input-group">
+            <label for="lowercase">Include Lowercase Letters:</label>
+            <input type="checkbox" id="lowercase">
+        </div>
+        <div class="input-group">
+            <label for="numbers">Include Numbers:</label>
+            <input type="checkbox" id="numbers">
+        </div>
+        <div class="input-group">
+            <label for="symbols">Include Special Symbols:</label>
+            <input type="checkbox" id="symbols">
+        </div>
+        <div class="button-group">
+            <button onclick="generatePassword()">Generate</button>
+            <button onclick="clearInput()">Clear</button>
+        </div>
+        <input type="text" id="result" placeholder="Generated Password" readonly>
+    </div>
+    <div class="generated-passwords" id="generated-passwords">
+        <!-- Generated passwords will appear here -->
+    </div>
+    <script>
+        function generatePassword() {
+            const name = document.getElementById('name').value;
+            const length = document.getElementById('length').value;
+            const includeUppercase = document.getElementById('uppercase').checked;
+            const includeLowercase = document.getElementById('lowercase').checked;
+            const includeNumbers = document.getElementById('numbers').checked;
+            const includeSymbols = document.getElementById('symbols').checked;
+
+            if (!name) {
+                alert("Please enter the name of the website");
+                return;
+            }
+
+            if (length <= 0) {
+                alert("Please enter a valid length");
+                return;
+            }
+
+            const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+            const numberChars = "0123456789";
+            const symbolChars = "!@#$%^&*()_+[]{}|;:,.<>?";
+
+            let allChars = "";
+            if (includeUppercase) allChars += uppercaseChars;
+            if (includeLowercase) allChars += lowercaseChars;
+            if (includeNumbers) allChars += numberChars;
+            if (includeSymbols) allChars += symbolChars;
+
+            if (allChars === "") {
+                alert("Please select at least one character type");
+                return;
+            }
+
+            let password = "";
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * allChars.length);
+                password += allChars[randomIndex];
+            }
+
+            document.getElementById('result').value = password;
+            addPasswordCard(name, password);
+        }
+
+        function clearInput() {
+            document.getElementById('name').value = '';
+            document.getElementById('length').value = '';
+            document.getElementById('uppercase').checked = false;
+            document.getElementById('lowercase').checked = false;
+            document.getElementById('numbers').checked = false;
+            document.getElementById('symbols').checked = false;
+            document.getElementById('result').value = '';
+        }
+
+        function addPasswordCard(name, password) {
+            const passwordCard = document.createElement('div');
+            passwordCard.className = 'generated-password-card';
+            passwordCard.innerHTML = `<strong>${name}</strong>: ${password}`;
+            document.getElementById('generated-passwords').appendChild(passwordCard);
+        }
+    </script>
+</body>
+</html>
